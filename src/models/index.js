@@ -1,3 +1,17 @@
+import mongoose from 'mongoose';
+import User from './user';
+import Message from './message';
+
+
+const connectDb = ()=>{
+    return mongoose.connect(
+        process.env.DATABASE_URL,
+        { useNewUrlParser: true },
+      );
+    }
+
+
+
 let users = {
     1: {
       id: '1',
@@ -24,9 +38,9 @@ let users = {
       text: 'By World',
       userId: '2',
     },
-  };
+  }; 
 
-  export default {
-    users,
-    messages,
-  };
+  export { connectDb };
+  const models = {User, Message};
+
+  export default models;
