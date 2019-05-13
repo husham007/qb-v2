@@ -1,4 +1,6 @@
 import mongoose, {Schema} from 'mongoose';
+import bcrypt from 'bcrypt';
+
 
 const userSchema = new Schema({
     username: {
@@ -33,6 +35,23 @@ const userSchema = new Schema({
     }
   
     return user;
+  };
+
+  userSchema.pre('remove', function(next) {
+    this.model('Message').deleteMany({ userId: this._id }, next);
+  });
+  
+  userSchema.pre('save', async function() {
+    this.password = await this.generatePasswordHash();
+  });
+  
+  userSchema.methods.generatePasswordHash = async function() {
+    const saltRounds = 10;
+    return await bcrypt.hash(this.password, saltRounds);
+  };
+  
+  userSchema.methods.validatePassword = async function(password) {
+    return await bcrypt.compare(password, this.password);
   };
 
 const User = mongoose.model('User', userSchema);

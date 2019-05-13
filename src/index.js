@@ -25,6 +25,7 @@ const server = new ApolloServer({
     context: async () => ({
         models,
         me: await models.User.findByLogin('rwieruch'),
+        secret: process.env.SECRET,
       }),
    
 });
@@ -38,8 +39,13 @@ app.listen({ port: 8000 }, () => {
     console.log('Apollo Server on http://localhost:8000/graphql');
   });
 
-connectDb().then(()=>{
+connectDb().then(async ()=>{
     console.log('connected to DB');
+   
+    await Promise.all([
+      models.User.deleteMany({}),
+      models.Message.deleteMany({}),
+    ]);
     createUsersWithMessages(new Date());
 });
     
@@ -52,8 +58,10 @@ const createUsersWithMessages = async date => {
       password: 'rwieruch',
       role: 'ADMIN',
     });
+
+    
   
-    const user2 = new models.User({
+    const user2 =  new models.User({
       username: 'ddavids',
       email: 'hello@david.com',
       password: 'ddavids',
@@ -87,4 +95,4 @@ const createUsersWithMessages = async date => {
 
 console.log('Hello Node.js project.');
 
-console.log(process.env.MY_SECRET);
+console.log(process.env.SECRET);
