@@ -3,12 +3,24 @@ import User from './user';
 import Message from './message';
 
 
-const connectDb = ()=>{
+const connectDb = () => {
+  if (process.env.TEST_DATABASE_URL) {
+    console.log(process.env.TEST_DATABASE_URL);
     return mongoose.connect(
-        process.env.DATABASE_URL,
-        { useNewUrlParser: true },
-      );
-    }  
+      process.env.TEST_DATABASE_URL,
+      { useNewUrlParser: true },
+    );
+  }
+
+  if (process.env.DATABASE_URL) {
+    
+    
+    return mongoose.connect(
+      process.env.DATABASE_URL,
+      { useNewUrlParser: true },
+    );
+  }
+};
 
 
 

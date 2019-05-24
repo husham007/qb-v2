@@ -15,6 +15,8 @@ export default gql`
     ): Token!
 
     signIn(login: String!, password: String!): Token!
+    deleteUser(id: ID!): Boolean!
+    updateUser(username: String!): User!
   }
 
   type Token {

@@ -1,9 +1,11 @@
 import jwt from 'jsonwebtoken';
 import { AuthenticationError, UserInputError } from 'apollo-server';
+import { combineResolvers } from 'graphql-resolvers';
+import { isAdmin, isAuthenticated } from './authorization';
 
 const createToken = async (user, secret, expiresIn) => {
-    const { id, email, username } = user;
-    return await jwt.sign({ id, email, username }, secret, {
+    const { id, email, username, role } = user;
+    return await jwt.sign({ id, email, username, role }, secret, {
       expiresIn,
     });
   };
@@ -60,6 +62,31 @@ export default {
       
             return { token: createToken(user, secret, '30m') };
           },
+
+          updateUser: combineResolvers(
+            isAuthenticated,
+            async (parent, { username }, { models, me }) => {
+              return await models.User.findByIdAndUpdate(
+                me.id,
+                { username },
+                { new: true },
+              );
+            },
+          ),
+
+          deleteUser: combineResolvers(
+            isAdmin,
+            async (parent, { id }, { models }) => {
+              const user = await models.User.findById(id);
+      
+              if (user) {
+                await user.remove();
+                return true;
+              } else {
+                return false;
+              }
+            },
+          ),
     },
 
     User: {
