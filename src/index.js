@@ -37,6 +37,8 @@ const server = new ApolloServer({
 
   typeDefs: schema,
   resolvers,
+  introspection: true, // enables introspection of the schema
+    playground: true, // enables the actual playground
   context: async ({ req }) => {
     const me = await getMe(req);
     return {
