@@ -8,7 +8,8 @@ extend type Query {
 
 extend type Mutation {
     createQuestion(statement: String!, category: String!, type: String!, level: String!, answer: String!, options: [String]! ): Question!
-    deleteQuestion(id: ID): Boolean!
+    editQuestion(id: ID!, statement: String!, category: String!, type: String!, level: String!, answer: String!, options: [String]! ): Question!
+    deleteQuestion(id: ID!): Boolean!
 }
 
 type QuestionPage {

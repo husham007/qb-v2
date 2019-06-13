@@ -54,6 +54,29 @@ const fromCursorHash = string =>
               } 
           ),
 
+          editQuestion: (parent, {id, statement, category, type, level, answer, options}, {me, models}) => {
+
+            const q = await models.Question.findById(id);
+
+            if (!question){
+                return false;
+              }
+              else {
+                q.statement = statement;
+                q.category = category;
+                q.type = type;
+                q.level = level;
+                q.answer = answer;
+                q.options = options;
+                await question.save();
+                return q;
+              }
+
+                
+                
+            } 
+        ,
+
           deleteQuestion: combineResolvers (isAuthenticated, isMessageOwner, async (parent, {id}, {models})=>{
               const question = await models.Question.findById(id);
 
@@ -61,7 +84,7 @@ const fromCursorHash = string =>
                 return false;
               }
               else {
-                  await message.remove();
+                  await question.remove();
                   return true;
               }
           }),

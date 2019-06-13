@@ -70,13 +70,14 @@ connectDb().then(async () => {
   if (isTest || isProduction) {
     // reset database
     await Promise.all([
-     // models.User.deleteMany({}),
-      //models.Message.deleteMany({}),
+    models.User.deleteMany({}),
+    models.Message.deleteMany({}),
+    models.Question.deleteMany({}),
     ]); 
 
-    //createUsersWithMessages(new Date());
-    console.log('DB connected');
-  } 
+    createUsersWithMessages(new Date());
+    console.log('DB connected'); 
+  }   
 }); 
 
 
@@ -115,12 +116,33 @@ const createUsersWithMessages = async date => {
     userId: user2.id,
   });
 
+  
+
+  
+
+  const question3 = new models.Question({
+    statement: 'What is programming',   
+    category: 'general',
+    type: 'short',
+    level: 'easy',
+    answer: 'answer',
+    options: ['i', 'j', 'k', 'l'],
+    author: user2.id,
+    createdAt: date.setSeconds(date.getSeconds() + 1),
+     
+    
+  });
+
   await message1.save();
   await message2.save();
   await message3.save();
 
+  await question3.save((err)=>{ 
+    if (err) throw err;
+  }); 
+
   await user1.save();
-  await user2.save();
+  await user2.save(); 
 };
 
 console.log('Hello Node.js project.');
