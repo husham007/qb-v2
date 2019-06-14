@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import User from './user';
 import Message from './message';
 import Question from './question';
+import QuestionBook from './questionBook';
 
 
 const connectDb = () => {
@@ -54,6 +55,6 @@ let users = {
   }; 
 
   export { connectDb };
-  const models = {User, Message, Question};
+  const models = {User, Message, Question, QuestionBook};
 
   export default models;

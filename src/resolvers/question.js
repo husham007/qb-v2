@@ -1,6 +1,6 @@
 import { combineResolvers } from 'graphql-resolvers';
-import { isAuthenticated, isMessageOwner } from './authorization';
-import message from './message';
+import { isAuthenticated, isQuestionOwner } from './authorization';
+
 
 const toCursorHash = string => Buffer.from(string).toString('base64');
 
@@ -10,25 +10,26 @@ const fromCursorHash = string =>
   export default {
       Query: {
           questions: async (parent, {cursor, limit = 10}, {models}) => {
+            
               const cursorOptions = cursor ? {
                   createdAt: {
                       $lt: fromCursorHash(cursor),
                   },
               }
               : {};
-              const questions = await models.Question.find(cursorOptions, null, {
+              let page = await models.Question.find(cursorOptions, null, {
                   sort: { createdAt: -1},
                   limit: limit + 1,
               });
 
-              const hasNextPage = questions.length > limit;
-              const questions = hasNextpage ? questions.slice(0,1): questions;
-
+              const hasNextPage = page.length > limit;
+              const questions = hasNextPage ? page.slice(0,-1): page;
+             
               return {
-                  questions, 
+                  page: questions, 
                   pageInfo: {
                       hasNextPage,
-                      endCursor: toCursorHash(pages[pages.length - 1].createdAt.toString(),
+                      endCursor: toCursorHash(questions[questions.length - 1].createdAt.toString(),
                       ),
                   },
               };
@@ -39,26 +40,26 @@ const fromCursorHash = string =>
       },
 
       Question: {
-          user: async (question, args, {models})=>{
-              return await models.User.findById(    question.author)
+          author: async (question, args, {models})=>{
+              return await models.User.findById(question.author)
           }
       },
 
       Mutation: {
           createQuestion: combineResolvers (
-              isAuthenticated, (parent, {statement, category, type, level, answer, options}, {me, models}) => {
+              isAuthenticated, (parent, {statement, category, type, level, answer, options, book}, {me, models}) => {
                   const question = models.Question.create({
-                      statement, category, type, level, answer, options, author: me.id,
+                      statement, category, type, level, answer, options, book, author: null,
                   });
                   return question;
               } 
           ),
 
-          editQuestion: (parent, {id, statement, category, type, level, answer, options}, {me, models}) => {
+          editQuestion: async (parent, {id, statement, category, type, level, answer, options, book}, {me, models}) => {
 
             const q = await models.Question.findById(id);
 
-            if (!question){
+            if (!q){
                 return false;
               }
               else {
@@ -68,7 +69,8 @@ const fromCursorHash = string =>
                 q.level = level;
                 q.answer = answer;
                 q.options = options;
-                await question.save();
+                q.book = book;
+                await q.save();
                 return q;
               }
 
@@ -77,7 +79,7 @@ const fromCursorHash = string =>
             } 
         ,
 
-          deleteQuestion: combineResolvers (isAuthenticated, isMessageOwner, async (parent, {id}, {models})=>{
+          deleteQuestion: combineResolvers (isAuthenticated, isQuestionOwner, async (parent, {id}, {models})=>{
               const question = await models.Question.findById(id);
 
               if (!question){

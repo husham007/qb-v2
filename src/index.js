@@ -38,7 +38,7 @@ const server = new ApolloServer({
   typeDefs: schema,
   resolvers,
   introspection: true, // enables introspection of the schema
-    playground: true, // enables the actual playground
+  playground: true, // enables the actual playground
   context: async ({ req }) => {
     const me = await getMe(req);
     return {
@@ -73,6 +73,7 @@ connectDb().then(async () => {
     models.User.deleteMany({}),
     models.Message.deleteMany({}),
     models.Question.deleteMany({}),
+    //models.QuestionBook.deleteMany({}),
     ]); 
 
     createUsersWithMessages(new Date());
@@ -97,6 +98,8 @@ const createUsersWithMessages = async date => {
     email: 'hello@david.com',
     password: 'ddavids',
   });
+
+  
 
   const message1 = new models.Message({
     text: 'Published the Road to learn React',
@@ -128,9 +131,15 @@ const createUsersWithMessages = async date => {
     answer: 'answer',
     options: ['i', 'j', 'k', 'l'],
     author: user2.id,
-    createdAt: date.setSeconds(date.getSeconds() + 1),
-     
-    
+    book: 'javascript',
+    createdAt: date.setSeconds(date.getSeconds() + 1),    
+  });
+
+  const questionBook = new models.QuestionBook({
+    course: 'javascript',
+    categories: ['general', 'loops', 'arrays', 'functions'],
+    types: ['MCQ', 'True/False', 'Coding', 'Short', 'Long', 'Find Bug(s)'],
+    levels: ['Easy', 'Intermediate', 'Hard', 'Advance']
   });
 
   await message1.save();
@@ -140,9 +149,15 @@ const createUsersWithMessages = async date => {
   await question3.save((err)=>{ 
     if (err) throw err;
   }); 
-
+/*
+  await questionBook.save((err)=>{ 
+    if (err) throw err;
+  }); 
+*/
   await user1.save();
   await user2.save(); 
+  
+ 
 };
 
 console.log('Hello Node.js project.');

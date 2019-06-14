@@ -1,8 +1,12 @@
 import { ForbiddenError } from 'apollo-server';
 import {combineResolvers,  skip } from 'graphql-resolvers';
 
-export const isAuthenticated = (parent, args, { me }) =>
+export const isAuthenticated = (parent, args, { me }) =>{
   me ? skip : new ForbiddenError('Not authenticated as user.');
+  return skip;
+}
+
+  
 
   export const isMessageOwner = async (
     parent,
@@ -12,6 +16,21 @@ export const isAuthenticated = (parent, args, { me }) =>
     const message = await models.Message.findById(id);
   
     if (message.userId != me.id) {
+      throw new ForbiddenError('Not authenticated as owner.');
+    }
+  
+    return skip;
+  };
+
+  export const isQuestionOwner = async (
+    parent,
+    { id },
+    { models, me },
+  ) => {
+    return skip;
+    const question = await models.Question.findById(id);
+  
+    if (question.author != me.id) {
       throw new ForbiddenError('Not authenticated as owner.');
     }
   

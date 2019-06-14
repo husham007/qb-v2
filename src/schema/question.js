@@ -2,18 +2,18 @@ import { gql } from 'apollo-server-express';
 
 export default gql `
 extend type Query {
-    questions(cursor: String, limit: Int): QuestionPage!
+    questions(cursor: String, limit: Int): QuestionPages!
     question(id: ID!): Question!
 }
 
 extend type Mutation {
-    createQuestion(statement: String!, category: String!, type: String!, level: String!, answer: String!, options: [String]! ): Question!
-    editQuestion(id: ID!, statement: String!, category: String!, type: String!, level: String!, answer: String!, options: [String]! ): Question!
+    createQuestion(statement: String!, category: String!, type: String!, level: String!, answer: String!, options: [String]! book: String!): Question!
+    editQuestion(id: ID!, statement: String!, category: String!, type: String!, level: String!, answer: String!, options: [String]! book: String!): Question!
     deleteQuestion(id: ID!): Boolean!
 }
 
-type QuestionPage {
-    questions: [Question!]!
+type QuestionPages {
+    page: [Question!]!
     pageInfo: PageInformation! 
 }
 
@@ -30,5 +30,7 @@ type Question {
     level: String!
     answer: String!
     option: [String]!
+    author: User
+    book: String!
 }
 `;
