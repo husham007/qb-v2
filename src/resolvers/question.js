@@ -1,5 +1,5 @@
 import { combineResolvers } from 'graphql-resolvers';
-import { isAuthenticated, isQuestionOwner } from './authorization';
+import { isAuthenticated, isQuestionOwner, isAdmin } from './authorization';
 
 
 const toCursorHash = string => Buffer.from(string).toString('base64');
@@ -47,15 +47,15 @@ const fromCursorHash = string =>
 
       Mutation: {
           createQuestion: combineResolvers (
-              isAuthenticated, (parent, {statement, category, type, level, answer, options, book}, {me, models}) => {
-                  const question = models.Question.create({
+              isAuthenticated, async (parent, {statement, category, type, level, answer, options, book}, {me, models}) => {
+                  const question = await models.Question.create({
                       statement, category, type, level, answer, options, book, author: null,
                   });
                   return question;
               } 
           ),
 
-          editQuestion: async (parent, {id, statement, category, type, level, answer, options, book}, {me, models}) => {
+          editQuestion: combineResolvers(isQuestionOwner, isAuthenticated, async (parent, {id, statement, category, type, level, answer, options, book}, {me, models}) => {
 
             const q = await models.Question.findById(id);
 
@@ -72,11 +72,9 @@ const fromCursorHash = string =>
                 q.book = book;
                 await q.save();
                 return q;
-              }
-
+              }              
                 
-                
-            } 
+            } ) 
         ,
 
           deleteQuestion: combineResolvers (isAuthenticated, isQuestionOwner, async (parent, {id}, {models})=>{

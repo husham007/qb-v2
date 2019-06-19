@@ -31,13 +31,17 @@ export default {
         signUp: async (
             parent,
             { username, email, password },
-            { models },
+            { models, secret },
         ) => {
+          console.log(username, email, password);
+          
             const user = await models.User.create({
                 username,
                 email,
                 password,
             });
+
+            console.log(user);
 
             return { token: createToken(user, secret, '30m') };
         },

@@ -70,13 +70,13 @@ connectDb().then(async () => {
   if (isTest || isProduction) {
     // reset database
     await Promise.all([
-    models.User.deleteMany({}),
-    models.Message.deleteMany({}),
-    models.Question.deleteMany({}),
+    //models.User.deleteMany({}),
+    //models.Message.deleteMany({}),
+    //models.Question.deleteMany({}),
     //models.QuestionBook.deleteMany({}),
     ]); 
 
-    createUsersWithMessages(new Date());
+    //createUsersWithMessages(new Date());
     console.log('DB connected'); 
   }   
 }); 

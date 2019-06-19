@@ -3,7 +3,7 @@ import {combineResolvers,  skip } from 'graphql-resolvers';
 
 export const isAuthenticated = (parent, args, { me }) =>{
   me ? skip : new ForbiddenError('Not authenticated as user.');
-  return skip;
+ 
 }
 
   
@@ -27,7 +27,7 @@ export const isAuthenticated = (parent, args, { me }) =>{
     { id },
     { models, me },
   ) => {
-    return skip;
+   
     const question = await models.Question.findById(id);
   
     if (question.author != me.id) {
