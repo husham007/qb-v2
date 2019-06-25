@@ -18,7 +18,7 @@ app.use(cors());
 
 const getMe = async req => {
   const token = req.headers['x-token'];
-  console.log('token', token);
+  //console.log('token', token);
   if (token) {
     try {
       return await jwt.verify(token, process.env.SECRET);
@@ -69,14 +69,17 @@ app.listen({ port }, () => {
 connectDb().then(async () => {
   if (isTest || isProduction) {
     // reset database
+    
     await Promise.all([
-    //models.User.deleteMany({}),
-    //models.Message.deleteMany({}),
-    //models.Question.deleteMany({}),
-    //models.QuestionBook.deleteMany({}),
+    models.User.deleteMany({}),
+    models.Message.deleteMany({}),
+    models.Question.deleteMany({}),
+    models.QuestionBook.deleteMany({}),
     ]); 
 
-    //createUsersWithMessages(new Date());
+    createUsersWithMessages(new Date());
+
+    
     console.log('DB connected'); 
   }   
 }); 
@@ -85,22 +88,24 @@ connectDb().then(async () => {
 
 const createUsersWithMessages = async date => {
   const user1 = new models.User({
-    username: 'rwieruch',
-    email: 'hello@robin.com',
-    password: 'rwieruch',
+    username: 'husham',
+    email: 'husham.yousaf@integirfy,io',
+    password: 'husham123',
     role: 'ADMIN',
   });
 
 
 
   const user2 = new models.User({
-    username: 'ddavids',
-    email: 'hello@david.com',
-    password: 'ddavids',
+    username: 'masood',
+    email: 'masood@integrify.io',
+    password: 'masood123',
   });
 
-  
 
+
+ 
+/*
   const message1 = new models.Message({
     text: 'Published the Road to learn React',
     createdAt: date.setSeconds(date.getSeconds() + 1),
@@ -119,15 +124,28 @@ const createUsersWithMessages = async date => {
     userId: user2.id,
   });
 
-  
+  */
 
   
 
-  const question3 = new models.Question({
+  const question1 = new models.Question({
     statement: 'What is programming',   
     category: 'general',
-    type: 'short',
-    level: 'easy',
+    type: 'Short',
+    level: 'Easy',
+    answer: 'answer',
+    options: ['a', 'b', 'c', 'd'],
+    author: user2.id,
+    book: 'javascript',
+    createdAt: date.setSeconds(date.getSeconds() + 1),    
+  });
+
+
+  const question2 = new models.Question({
+    statement: 'What are promises',   
+    category: 'Promises',
+    type: 'Long',
+    level: 'Advance',
     answer: 'answer',
     options: ['i', 'j', 'k', 'l'],
     author: user2.id,
@@ -135,25 +153,79 @@ const createUsersWithMessages = async date => {
     createdAt: date.setSeconds(date.getSeconds() + 1),    
   });
 
-  const questionBook = new models.QuestionBook({
-    course: 'javascript',
-    categories: ['general', 'loops', 'arrays', 'functions'],
-    types: ['MCQ', 'True/False', 'Coding', 'Short', 'Long', 'Find Bug(s)'],
+  const question3 = new models.Question({
+    statement: 'What are Functions',   
+    category: 'Functions',
+    type: 'Short',
+    level: 'Intermediate',
+    answer: 'answer',
+    options: ['i', 'j', 'k', 'l'],
+    author: user2.id,
+    book: 'javascript',
+    createdAt: date.setSeconds(date.getSeconds() + 1),    
+  });
+
+  const question4 = new models.Question({
+    statement: 'What is arrays',   
+    category: 'Arrays',
+    type: 'True/False',
+    level: 'Advance',
+    answer: 'answer',
+    options: ['i', 'j', 'k', 'l'],
+    author: user2.id,
+    book: 'javascript',
+    createdAt: date.setSeconds(date.getSeconds() + 1),    
+  });
+
+  const question5 = new models.Question({
+    statement: 'Reverse Array of Strings',   
+    category: 'Arrays',
+    type: 'Programming',
+    level: 'Hard',
+    answer: 'answer',
+    options: ['i', 'j', 'k', 'l'],
+    author: user2.id,
+    book: 'javascript',
+    createdAt: date.setSeconds(date.getSeconds() + 1),    
+  });
+
+  const questionBookOne = new models.QuestionBook({
+    book: 'javascript',
+    categories: ['General', 'Loops', 'Arrays', 'Functions', 'Promises'],
+    types: ['MCQ', 'True/False', 'Programming', 'Short', 'Long', 'Find Bug(s)'],
     levels: ['Easy', 'Intermediate', 'Hard', 'Advance']
   });
 
+  const questionBookTwo = new models.QuestionBook({
+    book: 'python',
+    categories: ['General', 'Loops', 'Arrays', 'Functions', 'Promises'],
+    types: ['MCQ', 'True/False', 'Programming', 'Short', 'Long', 'Find Bug(s)'],
+    levels: ['Easy', 'Intermediate', 'Hard', 'Advance']
+  });
+
+  /*
   await message1.save();
   await message2.save();
   await message3.save();
-
-  await question3.save((err)=>{ 
-    if (err) throw err;
-  }); 
-/*
-  await questionBook.save((err)=>{ 
-    if (err) throw err;
-  }); 
 */
+
+  await question1.save((err)=>{ 
+    if (err) throw err;
+  }); 
+
+
+  await question2.save();
+  await question3.save();
+  await question4.save();
+  await question5.save();
+  
+  await questionBookOne.save((err)=>{ 
+    if (err) throw err;
+  }); 
+  await questionBookTwo.save((err)=>{ 
+    if (err) throw err;
+  }); 
+
   await user1.save();
   await user2.save(); 
   

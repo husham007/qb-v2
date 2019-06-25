@@ -1,5 +1,6 @@
 import { combineResolvers } from 'graphql-resolvers';
 import { isAuthenticated, isQuestionOwner, isAdmin } from './authorization';
+import { stat } from 'fs';
 
 
 const toCursorHash = string => Buffer.from(string).toString('base64');
@@ -37,6 +38,27 @@ const fromCursorHash = string =>
           question: async (parent, {id}, {models})=>{
               return await models.Question.findById(id);
           },
+          searchQuestion: async (parent, {searchInput}, {models})=>{
+             // console.log(searchInput.statement);
+            let {statement, type, category, level, book} = searchInput;
+             //{ name: { $regex: /acme.*corp/, $options: "si" } }}
+             let regEx = new RegExp(statement);           
+            let searchObj = {};
+
+            if (statement) searchObj.statement = { $regex: regEx, $options: "i" };
+            if (type) searchObj.type = type;
+            if (category) searchObj.category = category;
+            if (level) searchObj.level = level;
+            if (book) searchObj.book = book;
+            
+
+            // let regex = `/${searchInput.statement}/`;
+            
+             let questions = models.Question.find(searchObj)
+                 
+
+            return questions;
+        },
       },
 
       Question: {

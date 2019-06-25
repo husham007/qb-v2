@@ -4,12 +4,14 @@ export default gql `
 extend type Query {
     questions(cursor: String, limit: Int): QuestionPages!
     question(id: ID!): Question!
+    searchQuestion (searchInput: SearchInput!): [Question]
 }
 
 extend type Mutation {
     createQuestion(statement: String!, category: String!, type: String!, level: String!, answer: String!, options: [String]! book: String!): Question!
     editQuestion(id: ID!, statement: String!, category: String!, type: String!, level: String!, answer: String!, options: [String]! book: String!): Question!
     deleteQuestion(id: ID!): Boolean!
+    
 }
 
 type QuestionPages {
@@ -32,5 +34,15 @@ type Question {
     option: [String]!
     author: User
     book: String!
+}
+
+input SearchInput {
+    statement: String
+    category: String
+    type: String
+    level: String
+    answer: String
+    option: [String]   
+    book: String
 }
 `;
