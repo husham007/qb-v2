@@ -70,6 +70,7 @@ connectDb().then(async () => {
   if (isTest || isProduction) {
     // reset database
     
+    /*
     await Promise.all([
     models.User.deleteMany({}),
     models.Message.deleteMany({}),
@@ -79,7 +80,7 @@ connectDb().then(async () => {
 
     createUsersWithMessages(new Date());
 
-    
+    */
     console.log('DB connected'); 
   }   
 }); 
@@ -209,6 +210,7 @@ const createUsersWithMessages = async date => {
   await message3.save();
 */
 
+/*
   await question1.save((err)=>{ 
     if (err) throw err;
   }); 
@@ -229,7 +231,7 @@ const createUsersWithMessages = async date => {
   await user1.save();
   await user2.save(); 
   
- 
+ */
 };
 
 console.log('Hello Node.js project.');
